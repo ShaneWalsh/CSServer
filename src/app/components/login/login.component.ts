@@ -2,16 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { LoginSocketService } from 'src/app/services/login-socket.service';
 
 @Component({
-  selector: 'app-test',
-  templateUrl: './test.component.html',
-  styleUrls: ['./test.component.css']
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
 })
-export class TestComponent implements OnInit {
+export class LoginComponent implements OnInit {
 
   constructor(private loginSocketService:LoginSocketService) { }
 
   ngOnInit() {
-    this.loginSocketService.ping();
+  }
+
+  onSubmit(){
+    console.log("attemptedLogin");
   }
 
 }

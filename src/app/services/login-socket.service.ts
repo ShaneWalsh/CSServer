@@ -9,12 +9,12 @@ export class LoginSocketService{
 
 
   constructor(private socketOne:SocketOne) {
-    this.socketOne.emit('attemptLogin',{username:'username',password:"password"}, ()=>{});
+    //this.socketOne.emit('attemptLogin',{username:'username',password:"password"}, ()=>{});
 
   }
 
-  ping(): any {
-    this.socketOne.emit('attemptLogin',{username:'username',password:"password"}, ()=>{});
+  tryLogin(username, password): any {
+    this.socketOne.emit('attemptLogin',{username:username,password:password}, ()=>{});
   }
 
 

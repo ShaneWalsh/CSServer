@@ -23,7 +23,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "./node_modules/bootstrap/dist/css/bootstrap.css"
             ],
             "scripts": []
           },
@@ -54,7 +55,12 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "CryptShyfterClientAng7:build:production"
+              "browserTarget": "CryptShyfterClientAng7:build:production",
+              "styles": [
+                "src/styles.css",
+                "./node_modules/bootstrap/dist/css/bootstrap.css"
+              ]
+
             }
           }
         },
