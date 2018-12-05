@@ -1,1 +1,7 @@
-<app-login></app-login>
+<div *ngIf="showLogin">
+<app-login (loggedIn)="handleLoggedIn()"></app-login>
+</div>
+
+<div *ngIf="!showLogin">
+  Happy login
+</div>

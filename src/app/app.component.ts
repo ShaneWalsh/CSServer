@@ -8,8 +8,13 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'CryptShyfterClientAng7';
+  showLogin = true;
 
   constructor(){
 
+  }
+
+  handleLoggedIn(){
+    this.showLogin = false;
   }
 }
