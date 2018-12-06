@@ -10,6 +10,7 @@ import { SocketTavern } from 'src/app/socket/SocketTavern';
 //import { LoginSocketService } from 'src/app/Services/login-socket.service';
 import { LoginComponent } from './components/login/login.component';
 import { TavernComponent } from './components/tavern/tavern.component';
+import { PartyComponent } from './components/party/party.component';
 
 
 
@@ -17,7 +18,8 @@ import { TavernComponent } from './components/tavern/tavern.component';
   declarations: [
     AppComponent,
     LoginComponent,
-    TavernComponent
+    TavernComponent,
+    PartyComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,96 @@
+
+wss://sheltered-fjord-52187.herokuapp.com/chat
+
+Good Socket Explaination.
+https://stackoverflow.com/questions/11498508/socket-emit-vs-socket-send
+
+// todo
+Login
+	- Add terms and conditions page after login where the user has to click I agree, where it says they cannot be rude etc. Just to cover yourselves.
+
+Marketplace
+	- do one :D
+
+tavern
+	- press enter submit for chat
+
+Party Group
+ 	- all requests should be going to the server
+	- and they should have a private group chat
+
+Party Solo
+	- should not be making requests to the server, because its only wasting resources of the real groups
+
+Gameplay
+	- todo :/
+
+
+
+//
+
+Version 1
+Create party, {id:1, name:{randomAdverb}+{randomBeast}+{party modifier} Raging Rhinos Possy, host:username, members:usernames/sockets, quest:idOfQuest}
+Join party, id 1
+Host has to launch quest, broadcast to all players, start the game.
+host should handle the random events etc, and broadcast them to the others.
+
+Normal Quest nodes, vote on action.
+	- once one person votes, that hits the host, the host then starts the timer for the choice. (color code peoples choices.)
+
+Jquery to generate each node, text and options.
+	- use off on click events between nodes.
+	- maybe add transition effects.
+
+Version 1.5
+RoamingTownAreas, the group has decided to explore the town and agree to meet at the town center when everyone is ready to leave.
+
+Battle, turn based, String interpilation using your item names etc, giving you attack types.
+	- items affect roll calcualtion etc.
+	- basically, narative based combat.
+	- pre and post battle should still have descriptive nodes.
+
+Version 2
+Fix party stuff. Add proper party create.
+- add invites to other players.
+- add matchmaking for random party assignment. Lvl match making?
+
+Sound effects?
+	- crypt shyfter.... creepy voice.
+	- fighting, tavern, explosions ?? Dunno we will see.
+
+Version 3
+Implement items =  Armor, Weapons, Items. (Initally, basic Roll++, heal etc)
+Implement the items affecting the in game.
+Implement a player equipped inventory.
+
+Version 4
+Implement configuration system
+	- generic baddies,
+		- with multiple strings for their actions etc.
+	- loot system
+	- generic items, weapons and armor config.
+	- story config.
+		- set baddies
+		- set nodes, options. Conditions.
+			- if has key, show option etc.
+		- set town areas.
+
+External tool, with a bunch of folders. and a JSON file for each type. ID's cannot change. As they will be used in DB.
+
+Version 5
+Database persistence.
+	- user
+		- characters.
+			- items. gold, weapons, armor
+			- level
+
+Version 6
+Auction House, buy and sell your awesome looted items to other players.
+Rename Items for gold cost.
+persistence of friends list.
+
+
+
+
+
+-
