@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SocketOne } from 'src/app/socket/SocketOne';
 import { Observable, Subject } from 'rxjs';
+import { PlayerData } from 'src/app/model/PlayerData';
 //import { Observable, Subject } from 'rxjs';
 
 @Injectable({
@@ -10,8 +11,7 @@ export class LoginSocketService{
 
   private loginSubject = new Subject<any>();
   private loggedIn:boolean = false;
-  private token;
-  private playerData;
+  private playerData:PlayerData;
 
   constructor(private socketOne:SocketOne) {
     //this.socketOne.emit('attemptLogin',{username:'username',password:"password"}, ()=>{});
@@ -32,11 +32,14 @@ export class LoginSocketService{
     return this.loggedIn;
   }
 
-  setLoggedInuser(response: any): any {
-      this.loggedIn = true;
-      this.token = response.token;
-      this.playerData = response.playerData;
+  public getPlayerData():PlayerData{
+    return this.playerData;
   }
 
+  setLoggedInuser(response: any): PlayerData {
+      this.loggedIn = true;
+      this.playerData = new PlayerData(response.token, response.playerData);
+      return this.playerData;
+  }
 
 }

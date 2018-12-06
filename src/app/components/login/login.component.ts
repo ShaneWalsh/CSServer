@@ -39,38 +39,10 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.loginFailed = false;
       this.loginSocketService.setLoggedInuser(response);
       this.loggedIn.emit(null);
-      // todo inform the parent componet that we need to close the login screen and show the main app.
     }
   }
 
   ngOnDestroy() {
-      // unsubscribe to ensure no memory leaks
       this.subscription.unsubscribe();
   }
 }
-
-/*
-
-
-import { MessageService } from './_services/index';
-
-@Component({
-    selector: 'app',
-    templateUrl: 'app.component.html'
-})
-
-export class AppComponent implements OnDestroy {
-    message: any;
-    subscription: Subscription;
-
-    constructor(private messageService: MessageService) {
-        // subscribe to home component messages
-        this.subscription = this.messageService.getMessage().subscribe(message => { this.message = message; });
-    }
-
-    ngOnDestroy() {
-        // unsubscribe to ensure no memory leaks
-        this.subscription.unsubscribe();
-    }
-}
-*/

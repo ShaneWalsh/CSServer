@@ -1,0 +1,18 @@
+<div>
+  <div>
+    <ul>
+      <li *ngFor="let shout of shouts">
+        {{shout.username}}:{{ shout.shout }}
+      </li>
+    </ul>
+  </div>
+  <div>
+    <form (ngSubmit)="onSubmit()" #shoutForm="ngForm">
+        <div class="form-group">
+          <label for="shout">Say</label>
+          <input type="text" class="form-control" name="shout" [(ngModel)]="model.shout" required>
+        </div>
+        <button type="submit" class="btn btn-success" [disabled]="!shoutForm.form.valid">Shout</button>
+    </form>
+  <div>
+</div>
