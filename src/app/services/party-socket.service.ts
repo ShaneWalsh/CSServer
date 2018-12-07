@@ -13,7 +13,6 @@ export class PartySocketService {
   private partyJoinedSubject = new Subject<any>();
 
   private partyId = -1;
-  private partyName;
   private partyLeader = false;
 
   private partyQuest;
@@ -22,15 +21,14 @@ export class PartySocketService {
   constructor(private socketParty:SocketParty,
     private loginSocketService:LoginSocketService) {
       this.socketParty.on('shoutBack', (response)=>{
+        console.log(response);
         this.partyChatSubject.next(response);
       });
 
       this.socketParty.on('createdParty', (response)=>{
-        console.log(response);
         this.partyId = response.partyId;
-        this.partyName = response.partyName;
         this.partyLeader = true;
-
+        this.partyJoinedSubject.next(response);
       });
 
       this.socketParty.on('newParty', (response)=>{
@@ -46,6 +44,8 @@ export class PartySocketService {
       });
 
       this.socketParty.on('joinedParty', (response)=>{
+        this.partyId = response.partyId;
+        this.partyLeader = false;
         this.partyJoinedSubject.next(response);
       });
 
@@ -73,6 +73,10 @@ export class PartySocketService {
     return this.partyNewSubject.asObservable();
   }
 
+  public getPartyJoinedSubject(): Observable<any> {
+    return this.partyJoinedSubject.asObservable();
+  }
+
   public inParty():boolean{
     return !(this.partyId === -1)
   }
@@ -81,12 +85,22 @@ export class PartySocketService {
     return this.partyLeader;
   }
 
+
+
   createParty(data: any): any {
       let playerData = this.loginSocketService.getPlayerData();
       data["username"] = playerData.getUsername();
       data["token"] = playerData.getToken();
 
       this.socketParty.emit("createParty",data);
+  }
+
+  joinParty(partyId: string): any {
+      let data = {partyId:partyId};
+      let playerData = this.loginSocketService.getPlayerData();
+      data["username"] = playerData.getUsername();
+      data["token"] = playerData.getToken();
+      this.socketParty.emit("joinParty",data);
   }
 
 }
