@@ -10,8 +10,23 @@
   Can also be invited by party leaders :D.
 
   <!-- This should probably launch a popup and let you configure the fields for the request. -->
-  <button type="button" name="button" (click)=createParty()></button>
-
+  <button type="button" name="button" (click)=createParty() title="Create Party">Create Party</button>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">GroupName</th>
+        <th scope="col">Last</th>
+        <th scope="col">Handle</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let party of parties">
+        <td>{{party.partyName}}</td>
+        <td>Otto</td>
+        <td><button type="button" name="button" (click)=createParty() title="Create Party">Join Party</button></td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
 <div class="" *ngIf="inParty">

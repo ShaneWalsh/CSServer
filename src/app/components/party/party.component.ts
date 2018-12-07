@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PartySocketService } from 'src/app/services/party-socket.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-party',
@@ -12,8 +13,12 @@ export class PartyComponent implements OnInit {
   parties:any[];
   model ={publicParty:true, partyName:"Ragining Rhinos"}
 
+  private subscriptionNewParty: Subscription;
+
   constructor(private partySocketService:PartySocketService) {
-    //partySocketService
+    this.subscriptionNewParty = this.partySocketService.getPartyNewSubject().subscribe(parties => {
+      this.parties = parties;
+    });
   }
 
   ngOnInit() {
@@ -23,4 +28,7 @@ export class PartyComponent implements OnInit {
     this.partySocketService.createParty(this.model);
   }
 
+  ngOnDestroy() {
+      this.subscriptionNewParty.unsubscribe();
+  }
 }

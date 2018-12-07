@@ -9,25 +9,42 @@ import { SocketParty } from 'src/app/socket/SocketParty';
 export class PartySocketService {
 
   private partyChatSubject = new Subject<any>();
-  private partyCreatedSubject = new Subject<any>();
   private partyNewSubject = new Subject<any>();
   private partyJoinedSubject = new Subject<any>();
 
-  partyId = -1;
-  partyLeader = false;
-  partyQuest;
+  private partyId = -1;
+  private partyName;
+  private partyLeader = false;
+
+  private partyQuest;
+  private parties = [];
 
   constructor(private socketParty:SocketParty,
     private loginSocketService:LoginSocketService) {
       this.socketParty.on('shoutBack', (response)=>{
         this.partyChatSubject.next(response);
       });
+
       this.socketParty.on('createdParty', (response)=>{
-        this.partyCreatedSubject.next(response);
+        console.log(response);
+        this.partyId = response.partyId;
+        this.partyName = response.partyName;
+        this.partyLeader = true;
+
       });
+
       this.socketParty.on('newParty', (response)=>{
-        this.partyNewSubject.next(response);
+        this.parties.push(response); // store the new party in the service, save us calling for them all again.
+        this.partyNewSubject.next(this.parties); // send the party list to the front end.
       });
+
+      // party destroyed, handle the same as above but the reverse
+      this.socketParty.on('partyDestroyed', (response)=>{
+        // todo find the right party matching the id, and remove it.
+        //this.parties.splice(response); // store the new party in the service, save us calling for them all again.
+        this.partyNewSubject.next(this.parties); // send the party list to the front end.
+      });
+
       this.socketParty.on('joinedParty', (response)=>{
         this.partyJoinedSubject.next(response);
       });
@@ -50,6 +67,10 @@ export class PartySocketService {
 
   public getPartyChatSubject(): Observable<any> {
     return this.partyChatSubject.asObservable();
+  }
+
+  public getPartyNewSubject(): Observable<any> {
+    return this.partyNewSubject.asObservable();
   }
 
   public inParty():boolean{
