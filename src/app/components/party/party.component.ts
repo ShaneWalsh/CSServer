@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { PartySocketService } from 'src/app/services/party-socket.service';
 
 @Component({
   selector: 'app-party',
@@ -7,9 +8,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PartyComponent implements OnInit {
 
-  constructor() { }
+  inParty:boolean = false;
+  parties:any[];
+  model ={publicParty:true, partyName:"Ragining Rhinos"}
+
+  constructor(private partySocketService:PartySocketService) {
+    //partySocketService
+  }
 
   ngOnInit() {
+  }
+
+  createParty(){
+    this.partySocketService.createParty(this.model);
   }
 
 }

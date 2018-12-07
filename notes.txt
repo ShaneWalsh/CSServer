@@ -12,14 +12,15 @@ Marketplace
 	- do one :D
 
 tavern
-	- press enter submit for chat
+	-* press enter submit for chat
 
 Party Group
  	- all requests should be going to the server
 	- and they should have a private group chat
 
-Party Solo
+Party Solo, ergo not an actual party.
 	- should not be making requests to the server, because its only wasting resources of the real groups
+	- plays offline, no party chat box, plays the game as normal.
 
 Gameplay
 	- todo :/

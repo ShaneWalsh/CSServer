@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { TavernSocketService } from 'src/app/services/tavern-socket.service';
+import { PartySocketService } from 'src/app/services/party-socket.service';
 //import { LoginSocketService } from 'src/app/services/login-socket.service';
 
 @Component({
@@ -10,11 +12,15 @@ export class AppComponent {
   title = 'CryptShyfterClientAng7';
   showLogin = true;
 
-  constructor(){
+  constructor(private tavernSocketService:TavernSocketService,
+              private partySocketService:PartySocketService){
 
   }
 
   handleLoggedIn(){
     this.showLogin = false;
+    // register the sockets as we now have a valid user.
+    this.tavernSocketService.register();
+    this.partySocketService.register();
   }
 }

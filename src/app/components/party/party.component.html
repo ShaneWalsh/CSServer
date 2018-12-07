@@ -1,3 +1,19 @@
-<p>
-  party works!
-</p>
+
+<div *ngIf="!inParty">
+  Currently you are not in any party. Either create one or join one :D
+
+  Create party button.
+
+  List of currently Open Parties you can join!
+  Join party button on the row for each one.
+
+  Can also be invited by party leaders :D.
+
+  <!-- This should probably launch a popup and let you configure the fields for the request. -->
+  <button type="button" name="button" (click)=createParty()></button>
+
+</div>
+
+<div class="" *ngIf="inParty">
+  You are in the party NAME!
+</div>
