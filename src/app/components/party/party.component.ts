@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { PartySocketService } from 'src/app/services/party-socket.service';
 import { Subscription } from 'rxjs';
+import { QuestSocketService } from 'src/app/services/quest-socket.service';
+import { QuestData } from 'src/app/model/QuestData';
 
 @Component({
   selector: 'app-party',
@@ -14,11 +16,12 @@ export class PartyComponent implements OnInit {
   partyLeader:boolean = false;
   parties:any[]; // current list of all parties.
   model ={publicParty:true, partyName:"Raging Rhinos", partyDescription:"An awesome good time!"}
+  quests:QuestData[];
 
   private subscriptionNewParty: Subscription;
   private subscriptionJoinedParty: Subscription;
 
-  constructor(private partySocketService:PartySocketService) {
+  constructor(private partySocketService:PartySocketService, private questSocketService:QuestSocketService) {
     this.subscriptionNewParty = this.partySocketService.getPartyNewSubject().subscribe(parties => {
       this.parties = parties;
     });
@@ -27,10 +30,13 @@ export class PartyComponent implements OnInit {
       this.partyLeader = this.partySocketService.isPartyLeader();
       this.inParty = true;
     });
+    this.quests = this.questSocketService.getQuestList();
+    console.log(this.quests)
+    //console.log(this.quests[0].getData()["default"])
   }
 
   ngOnInit() {
-    
+
   }
 
   createParty(){

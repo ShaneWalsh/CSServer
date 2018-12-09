@@ -38,6 +38,24 @@
     disband/leave the party button.
     (Leader) kick out a member button.
 
-    select a quest from the list of quests!
+    (Leader)select a quest from the list of quests!
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Description</th>
+          <th scope="col">Completed</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let quest of quests">
+          <td>{{quest.getName()}}</td>
+          <td>{{quest.getDescription()}}</td>
+          <td>{{quest.getData()["Module"]}}</td>
+          <td><button type="button" name="button"  title="Join Party">Start Quest</button></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
