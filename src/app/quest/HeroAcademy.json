@@ -1,4 +1,15 @@
 {
-  "stories":["id","HeroAcademy Name"],
-  "convos":["id","converstaions"]
+  "startingStoryNodeId":1,
+  "stories":{
+    "1":{"text":"You all raise your drinks in celebration! When a creepy old feller approaches.","choice":[1,2,3]},
+    "2":{"text":"You 2","choice":[4]},
+    "3":{"text":"You 3","choice":[4]},
+    "4":{"text":"You 4","choice":[4]}
+  },
+  "choice":{
+    "1":{"text":"Feck off","story":2},
+    "2":{"text":"Hows it matey","story":3},
+    "3":{"text":"Ohhhh saucy","story":4},
+    "4":{"text":"the end","story":5}
+  }
 }

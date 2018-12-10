@@ -12,6 +12,7 @@ import { SocketParty } from 'src/app/socket/SocketParty';
 import { LoginComponent } from './components/login/login.component';
 import { TavernComponent } from './components/tavern/tavern.component';
 import { PartyComponent } from './components/party/party.component';
+import { QuestComponent } from './components/quest/quest.component';
 
 
 
@@ -20,7 +21,8 @@ import { PartyComponent } from './components/party/party.component';
     AppComponent,
     LoginComponent,
     TavernComponent,
-    PartyComponent
+    PartyComponent,
+    QuestComponent
   ],
   imports: [
     BrowserModule,

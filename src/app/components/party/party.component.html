@@ -53,7 +53,7 @@
           <td>{{quest.getName()}}</td>
           <td>{{quest.getDescription()}}</td>
           <td>{{quest.getData()["Module"]}}</td>
-          <td><button type="button" name="button"  title="Join Party">Start Quest</button></td>
+          <td><button type="button" name="button"  title="Join Party" (click)="startQuest(quest.getQuestId())" >Start Quest</button></td>
         </tr>
       </tbody>
     </table>

@@ -17,11 +17,19 @@ export class QuestSocketService {
     this.quests = [];
     //let q = new QuestData("HeroAcademy","You and your friends have graduated the hero HeroAcademy! What are the chances that quest is waiting for you!",heroAcademyData);
     // this.quests[0].getData()["default"] to access quest data.
-    this.quests.push(new QuestData("HeroAcademy","You and your friends have graduated the hero HeroAcademy! What are the chances that quest is waiting for you!",heroAcademyData));
+    this.quests.push(new QuestData(1,"HeroAcademy","You and your friends have graduated the hero HeroAcademy! What are the chances that quest is waiting for you!",heroAcademyData));
   }
 
   getQuestList():QuestData[]{
     return this.quests;
+  }
+
+  getQuest(questId:number):QuestData{
+    for(let i = 0; i < this.quests.length;i++){
+      if(this.quests[i].getQuestId() == questId){
+        return this.quests[i];
+      }
+    }
   }
 
 }

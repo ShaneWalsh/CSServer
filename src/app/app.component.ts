@@ -11,6 +11,8 @@ import { PartySocketService } from 'src/app/services/party-socket.service';
 export class AppComponent {
   title = 'CryptShyfterClientAng7';
   showLogin = true;
+  showMain = false;
+  showQuest = false;
 
   constructor(private tavernSocketService:TavernSocketService,
               private partySocketService:PartySocketService){
@@ -22,5 +24,11 @@ export class AppComponent {
     // register the sockets as we now have a valid user.
     this.tavernSocketService.register();
     this.partySocketService.register();
+    this.showMain = true;
+  }
+
+  launchedQuest(){
+    this.showMain = false;
+    this.showQuest = true;
   }
 }

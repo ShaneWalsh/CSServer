@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { LoginSocketService } from 'src/app/services/login-socket.service';
 import { Subject, Observable } from 'rxjs';
 import { SocketParty } from 'src/app/socket/SocketParty';
+import { QuestAction } from 'src/app/model/QuestAction';
 
 @Injectable({
   providedIn: 'root'
@@ -11,10 +12,12 @@ export class PartySocketService {
   private partyChatSubject = new Subject<any>();
   private partyNewSubject = new Subject<any>();
   private partyJoinedSubject = new Subject<any>();
+  private partyQuestSubject = new Subject<QuestAction>();
 
   private partyId = -1;
   private partyLeader = false;
 
+  private partyQuestId;
   private partyQuest;
   private parties = [];
 
@@ -49,6 +52,14 @@ export class PartySocketService {
         this.partyJoinedSubject.next(response);
       });
 
+      this.socketParty.on('launchQuest', (questData)=>{
+        this.partyQuestId = questData.questId;
+        let qa = new QuestAction("launchQuest",questData); // contains questId
+        this.partyQuestSubject.next(qa);
+      });
+
+      // vote on dialog option
+
       // make a call to get the current parties.
 
       //socket.emit('createdParty',{partyId:partyId,partyName:partyName,publicParty:publicParty}); // reply only to the socket that created the party.
@@ -77,12 +88,20 @@ export class PartySocketService {
     return this.partyJoinedSubject.asObservable();
   }
 
+  public getPartyQuestSubject(): Observable<any> {
+    return this.partyQuestSubject.asObservable();
+  }
+
   public inParty():boolean{
     return !(this.partyId === -1)
   }
 
   public isPartyLeader():boolean{
     return this.partyLeader;
+  }
+
+  public getPartyQuestId():number{
+    return this.partyQuestId;
   }
 
 
@@ -101,6 +120,14 @@ export class PartySocketService {
       data["username"] = playerData.getUsername();
       data["token"] = playerData.getToken();
       this.socketParty.emit("joinParty",data);
+  }
+
+  startQuest(questId: number): any {
+    let data = {partyId:this.partyId, questId:questId};
+    let playerData = this.loginSocketService.getPlayerData();
+    data["username"] = playerData.getUsername();
+    data["token"] = playerData.getToken();
+    this.socketParty.emit("startQuest",data);
   }
 
 }

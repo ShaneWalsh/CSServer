@@ -1,14 +1,21 @@
 
 export class QuestData{
 
+  private questId: number;
   private name: string;
   private description: string;
   private data:any;
 
-  constructor(name, description, data) {
+
+  constructor(questId, name, description, data) {
+    this.questId = questId;
     this.description = description;
     this.name = name;
     this.data = data;
+  }
+
+  getQuestId():number {
+    return this.questId;
   }
 
   getName(): String {

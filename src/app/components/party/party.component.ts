@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { PartySocketService } from 'src/app/services/party-socket.service';
 import { Subscription } from 'rxjs';
 import { QuestSocketService } from 'src/app/services/quest-socket.service';
 import { QuestData } from 'src/app/model/QuestData';
+import { QuestAction } from 'src/app/model/QuestAction';
 
 @Component({
   selector: 'app-party',
@@ -18,12 +19,18 @@ export class PartyComponent implements OnInit {
   model ={publicParty:true, partyName:"Raging Rhinos", partyDescription:"An awesome good time!"}
   quests:QuestData[];
 
+  @Output() launchedQuest: EventEmitter<number> = new EventEmitter();
+
   private subscriptionNewParty: Subscription;
   private subscriptionJoinedParty: Subscription;
+  private subscriptionPartyQuestSubject: Subscription;
 
   constructor(private partySocketService:PartySocketService, private questSocketService:QuestSocketService) {
     this.subscriptionNewParty = this.partySocketService.getPartyNewSubject().subscribe(parties => {
       this.parties = parties;
+    });
+    this.subscriptionPartyQuestSubject = this.partySocketService.getPartyQuestSubject().subscribe(questAction => {
+      this.handleQuestAction(questAction);
     });
     this.subscriptionJoinedParty = this.partySocketService.getPartyJoinedSubject().subscribe(party => {
       this.party = party;
@@ -31,8 +38,6 @@ export class PartyComponent implements OnInit {
       this.inParty = true;
     });
     this.quests = this.questSocketService.getQuestList();
-    console.log(this.quests)
-    //console.log(this.quests[0].getData()["default"])
   }
 
   ngOnInit() {
@@ -47,8 +52,22 @@ export class PartyComponent implements OnInit {
     this.partySocketService.joinParty(partyId);
   }
 
+  startQuest(questId:number){
+      this.partySocketService.startQuest(questId);
+  }
+
+  handleQuestAction(questAction: QuestAction) {
+      if(questAction.getAction() == "launchQuest"){
+        console.log("Launching "+questAction.getData().questId);
+        this.launchedQuest.emit(questAction.getData().questId)
+      } else{
+        //todo _s log an error something has gone wrong
+      }
+  }
+
   ngOnDestroy() {
       this.subscriptionNewParty.unsubscribe();
       this.subscriptionJoinedParty.unsubscribe();
+      this.subscriptionPartyQuestSubject.unsubscribe();
   }
 }

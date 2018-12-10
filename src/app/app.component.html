@@ -2,8 +2,12 @@
 <app-login (loggedIn)="handleLoggedIn()"></app-login>
 </div>
 
-<div *ngIf="!showLogin">
+<div *ngIf="showMain">
   <app-tavern></app-tavern>
   <hr>
-  <app-party></app-party>
+  <app-party (launchedQuest)="launchedQuest(questId)"></app-party>
+</div>
+
+<div *ngIf="showQuest">
+  <app-quest></app-quest>
 </div>
