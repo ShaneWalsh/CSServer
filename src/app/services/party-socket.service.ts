@@ -8,11 +8,11 @@ import { QuestAction } from 'src/app/model/QuestAction';
   providedIn: 'root'
 })
 export class PartySocketService {
-
   private partyChatSubject = new Subject<any>();
   private partyNewSubject = new Subject<any>();
   private partyJoinedSubject = new Subject<any>();
   private partyQuestSubject = new Subject<QuestAction>();
+  private partyVoteSubject = new Subject<QuestAction>();
 
   private partyId = -1;
   private partyLeader = false;
@@ -59,6 +59,10 @@ export class PartySocketService {
       });
 
       // vote on dialog option
+      this.socketParty.on('voteEmit', (voteData)=>{
+        let qa = new QuestAction("vote",voteData);
+        this.partyVoteSubject.next(qa);
+      });
 
       // make a call to get the current parties.
 
@@ -90,6 +94,10 @@ export class PartySocketService {
 
   public getPartyQuestSubject(): Observable<any> {
     return this.partyQuestSubject.asObservable();
+  }
+
+  public getPartyVoteSubject(): Observable<any> {
+    return this.partyVoteSubject.asObservable();
   }
 
   public inParty():boolean{
@@ -128,6 +136,14 @@ export class PartySocketService {
     data["username"] = playerData.getUsername();
     data["token"] = playerData.getToken();
     this.socketParty.emit("startQuest",data);
+  }
+
+  vote(choiceId: any) {
+    let data = {partyId:this.partyId, choiceId:choiceId};
+    let playerData = this.loginSocketService.getPlayerData();
+    data["username"] = playerData.getUsername();
+    data["token"] = playerData.getToken();
+    this.socketParty.emit("voteSubmit",data);
   }
 
 }

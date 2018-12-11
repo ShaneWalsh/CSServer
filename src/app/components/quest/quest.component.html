@@ -1,3 +1,10 @@
-<p>
-  {{currentStoryNode.text}}
-</p>
+<div>
+  <p>
+    {{currentStoryNode.getText()}}
+  </p>
+  <ul class="list-group">
+    <ng-container *ngFor="let choiceNode of currentStoryNode.getChoiceNodes()">
+      <li class="list-group-item" *ngIf="choiceNode.shouldShow()" (click)="choose(choiceNode)">{{choiceNode.getText()}}</li>
+    </ng-container>
+  </ul>
+</div>
