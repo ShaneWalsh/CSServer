@@ -2,9 +2,23 @@
   <p>
     {{currentStoryNode.getText()}}
   </p>
+  <p>
+    Group Decision
+    <ng-container *ngIf="voteTimer > -1">
+      {{voteTimer}}
+    </ng-container>
+  </p>
   <ul class="list-group">
     <ng-container *ngFor="let choiceNode of currentStoryNode.getChoiceNodes()">
-      <li class="list-group-item" *ngIf="choiceNode.shouldShow()" (click)="choose(choiceNode)">{{choiceNode.getText()}}</li>
+      <li class="list-group-item" *ngIf="choiceNode.shouldShow()" (click)="choose(choiceNode)">
+        {{choiceNode.getText()}}
+        <ng-container *ngIf="choiceNode.getVotes().length > 0 && !votesShown">
+          Votes:{{choiceNode.getVotes().length}}
+        </ng-container>
+        <ng-container *ngIf="choiceNode.getVotes().length > 0 && votesShown">
+          <span *ngFor="let vote of choiceNode.getVotes()"> {{vote}}</span>
+        </ng-container>
+      </li>
     </ng-container>
   </ul>
 </div>

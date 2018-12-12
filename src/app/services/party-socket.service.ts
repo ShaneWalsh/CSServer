@@ -16,6 +16,7 @@ export class PartySocketService {
 
   private partyId = -1;
   private partyLeader = false;
+  private partyMemebers: any[];
 
   private partyQuestId;
   private partyQuest;
@@ -31,6 +32,11 @@ export class PartySocketService {
       this.socketParty.on('createdParty', (response)=>{
         this.partyId = response.partyId;
         this.partyLeader = true;
+
+        let playerData = this.loginSocketService.getPlayerData();
+        this.partyMemebers= [];
+        this.partyMemebers.push(playerData.getUsername());
+
         this.partyJoinedSubject.next(response);
       });
 
@@ -46,10 +52,17 @@ export class PartySocketService {
         this.partyNewSubject.next(this.parties); // send the party list to the front end.
       });
 
+      // todo new party member alert
       this.socketParty.on('joinedParty', (response)=>{
-        this.partyId = response.partyId;
-        this.partyLeader = false;
-        this.partyJoinedSubject.next(response);
+        let playerData = this.loginSocketService.getPlayerData();
+        if(response.username == playerData.getUsername()){
+          this.partyId = response.partyId;
+          this.partyLeader = false;
+          this.partyJoinedSubject.next(response);
+        } else{ // a different user has joined out party
+
+        }
+        this.partyMemebers.push(response.username);
       });
 
       this.socketParty.on('launchQuest', (questData)=>{
@@ -112,7 +125,9 @@ export class PartySocketService {
     return this.partyQuestId;
   }
 
-
+  public getPartySize(): number {
+      return this.partyMemebers.length;
+  }
 
   createParty(data: any): any {
       let playerData = this.loginSocketService.getPlayerData();
