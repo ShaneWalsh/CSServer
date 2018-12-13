@@ -2,9 +2,9 @@
   "startingStoryNodeId":1,
   "stories":{
     "1":{"text":"You all raise your drinks in celebration! When a creepy old feller approaches.","choice":[1,2,3]},
-    "2":{"text":"You 2","choice":[4]},
-    "3":{"text":"You 3","choice":[4]},
-    "4":{"text":"You 4","choice":[4]}
+    "2":{"text":"You Feck off","choice":[4]},
+    "3":{"text":"You're a matey","choice":[4]},
+    "4":{"text":"Suck it!","choice":[4]}
   },
   "choice":{
     "1":{"text":"Feck off","story":2},
