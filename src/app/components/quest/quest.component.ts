@@ -18,6 +18,8 @@ export class QuestComponent implements OnInit {
   private questId:number;
   private questData:QuestData;
 
+  private questContainer:any; // used for any and all local variables set by the quest. e.g states etc.
+
   private currentStoryNode:StoryNode;
   private voteTimer:number = -1;
 
@@ -39,7 +41,7 @@ export class QuestComponent implements OnInit {
     // and start running through it!
 
     this.subscriptionPartyVoteSubject = this.partySocketService.getPartyVoteSubject().subscribe(questAction => {
-      this.handleVote(questAction);
+      this.handlePartyAction(questAction);
     });
   }
 
@@ -54,9 +56,54 @@ export class QuestComponent implements OnInit {
     }
   }
 
+  private getChosenVote():ChoiceNode{
+      // is clear winner,
+      let biggest = 0;
+      let choiceChoice:ChoiceNode = null;
+      for(let choice of this.currentStoryNode.getChoiceNodes()){
+        if(choice.getVotes().length > biggest){
+          biggest = choice.getVotes().length;
+          choiceChoice = choice;
+        } else if(choice.getVotes().length == biggest){
+          choiceChoice = null; // we are undecied then because there is at least two elements with the same size. if there is a bigger one he will set the choice.
+        }
+      }
 
+      if(choiceChoice == null){ // find biggest set and chose one of them at random. because none was found above
+        biggest = 0; // coin flip between options.
+        for(let choice of this.currentStoryNode.getChoiceNodes()){
+          if(choice.getVotes().length > biggest){
+            biggest = choice.getVotes().length;
+          }
+        }
 
-  handleVote(questAction: QuestAction) {
+        let choicesTemp:ChoiceNode[] = [];
+        for(let choice of this.currentStoryNode.getChoiceNodes()){
+          if(choice.getVotes().length == biggest){
+            choicesTemp.push(choice);
+          }
+        }
+
+        let pos = Math.floor(Math.random() * choicesTemp.length);
+        choiceChoice = choicesTemp[pos];
+      }
+      return choiceChoice;
+  }
+
+  private sendChoiceToParty(){
+    this.clearTimer();
+    let choice:ChoiceNode = this.getChosenVote();
+
+    // if this choice has any actions decide, execute them now!
+    if(choice.hasTask()){
+      // todo put real task logic
+
+    }
+
+    this.partySocketService.sendChosenVote(choice.getId());
+  }
+
+  handlePartyAction(questAction: QuestAction) {
     if(questAction.getAction() == "vote"){
       let choices:ChoiceNode[] = this.currentStoryNode.getChoiceNodes();
       for(let choice of choices){
@@ -85,50 +132,15 @@ export class QuestComponent implements OnInit {
       }
     } else if(questAction.getAction() == "chosenVoteAction"){ // move the quest along!
       this.clearTimer(); // might be called multiple times, by the leader and then by slaves.
-      let storyId = this.getQData().choice[questAction.getData().choiceId].story;
+
+      // what kind of choice is this? could be a task, if so, execute the task!
+
+      let storyId = this.getQData().choice[questAction.getData().choiceId].story[0]; // postion 0 for defaults, 0/1 for actions.
       this.currentStoryNode = new StoryNode(storyId,this.getQData().stories[storyId], this.getQData().choice);
     }
   }
 
-  private getChosenVote():any{
-      // is clear winner,
-      let biggest = 0;
-      let choiceChoice:any = -1;
-      for(let choice of this.currentStoryNode.getChoiceNodes()){
-        if(choice.getVotes().length > biggest){
-          biggest = choice.getVotes().length;
-          choiceChoice = choice.getId();
-        } else if(choice.getVotes().length == biggest){
-          choiceChoice = -1; // we are undecied then because there is at least two elements with the same size. if there is a bigger one he will set the choice.
-        }
-      }
 
-      if(choiceChoice == -1){ // find biggest set and chose one of them at random. because none was found above
-        biggest = 0; // coin flip between options.
-        for(let choice of this.currentStoryNode.getChoiceNodes()){
-          if(choice.getVotes().length > biggest){
-            biggest = choice.getVotes().length;
-          }
-        }
-
-        let choicesTemp:ChoiceNode[] = [];
-        for(let choice of this.currentStoryNode.getChoiceNodes()){
-          if(choice.getVotes().length == biggest){
-            choicesTemp.push(choice);
-          }
-        }
-
-        let pos = Math.floor(Math.random() * choicesTemp.length);
-        choiceChoice = choicesTemp[pos].getId();
-      }
-      return choiceChoice;
-  }
-
-  private sendChoiceToParty(){
-    this.clearTimer();
-    let choice = this.getChosenVote();
-    this.partySocketService.sendChosenVote(choice);
-  }
 
 
 

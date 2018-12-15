@@ -78,8 +78,8 @@ export class PartySocketService {
       });
 
       // vote on dialog option
-      this.socketParty.on('chosenVoteAction', (voteData)=>{
-        let qa = new QuestAction("chosenVoteAction",voteData);
+      this.socketParty.on('partyUpdateAction', (voteData)=>{
+        let qa = new QuestAction(voteData.questActionCode,voteData);
         this.partyVoteSubject.next(qa);
       });
 
@@ -167,12 +167,12 @@ export class PartySocketService {
     this.socketParty.emit("voteSubmit",data);
   }
 
-  sendChosenVote(choiceId: any) {
-    let data = {partyId:this.partyId, choiceId:choiceId};
+  sendChosenVote(choiceId: any, taskData:any={}) {
+    let data = {partyId:this.partyId, choiceId:choiceId, questActionCode:"chosenVoteAction",taskData};
     let playerData = this.loginSocketService.getPlayerData();
     data["username"] = playerData.getUsername();
     data["token"] = playerData.getToken();
-    this.socketParty.emit("chosenVote",data);
+    this.socketParty.emit("partyUpdate",data);
   }
 
 }

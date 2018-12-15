@@ -1,3 +1,6 @@
+import { ChoiceType } from "src/app/model/enum/ChoiceType";
+
+
 
 export class ChoiceNode{
 
@@ -5,6 +8,8 @@ export class ChoiceNode{
   private _text: string;
   private _storyId: any;
   private _show:boolean = true; // by default all choices should be visible unless condition says otherwise.
+  private _type:ChoiceType = ChoiceType.default;
+  private _hasTask:boolean = false;
 
   private _votes:string[] = [];
 
@@ -12,6 +17,15 @@ export class ChoiceNode{
     this._id = id;
     this._text = choiceData.text;
     this._storyId = choiceData.story;
+
+    if(choiceData.choiceType){
+      if(choiceData.choiceType == "default")
+        this._type = ChoiceType.default;
+      else if(choiceData.choiceType == "beefTask"){
+        this._type = ChoiceType.beefTask;
+        this._hasTask = true;
+      }
+    }
 
       // add functions to execute
 
@@ -31,6 +45,10 @@ export class ChoiceNode{
 
   getStoryId():any{
     return this._storyId;
+  }
+
+  hasTask(): boolean {
+      return this._hasTask;
   }
 
   getVotes():string[]{

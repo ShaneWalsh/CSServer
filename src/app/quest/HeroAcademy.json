@@ -2,14 +2,15 @@
   "startingStoryNodeId":1,
   "stories":{
     "1":{"text":"You all raise your drinks in celebration! When a creepy old feller approaches.","choice":[1,2,3]},
-    "2":{"text":"You Feck off","choice":[4]},
+    "2":{"text":"${player} lifts the boulder with a pink finger and tosses it aside!","choice":[4]},
     "3":{"text":"You're a matey","choice":[4]},
-    "4":{"text":"Suck it!","choice":[4]}
+    "4":{"text":"Suck it!","choice":[4]},
+    "5":{"text":"${player} fails to lift the mighty boulder! Because ${player} is weak!","choice":[4]}
   },
   "choice":{
-    "1":{"text":"Feck off","story":2},
-    "2":{"text":"Hows it matey","story":3},
-    "3":{"text":"Ohhhh saucy","story":4},
-    "4":{"text":"the end","story":5}
+    "1":{"text":"Try and lift the might boulder!","story":[2,5]},
+    "2":{"text":"Hows it matey","story":[3]},
+    "3":{"text":"Ohhhh saucy","story":[4]},
+    "4":{"text":"the end","story":[6]}
   }
 }
