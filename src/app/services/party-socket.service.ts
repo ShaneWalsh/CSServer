@@ -3,6 +3,8 @@ import { LoginSocketService } from 'src/app/services/login-socket.service';
 import { Subject, Observable } from 'rxjs';
 import { SocketParty } from 'src/app/socket/SocketParty';
 import { QuestAction } from 'src/app/model/QuestAction';
+import { PlayerData } from 'src/app/model/PlayerData';
+import { PartyData } from 'src/app/model/PartyData';
 
 @Injectable({
   providedIn: 'root'
@@ -10,13 +12,12 @@ import { QuestAction } from 'src/app/model/QuestAction';
 export class PartySocketService {
   private partyChatSubject = new Subject<any>();
   private partyNewSubject = new Subject<any>();
-  private partyJoinedSubject = new Subject<any>();
+  private partyJoinedSubject = new Subject<PartyData>();
   private partyQuestSubject = new Subject<QuestAction>();
   private partyVoteSubject = new Subject<QuestAction>();
 
-  private partyId = -1;
+  private partyData:PartyData=null;
   private partyLeader = false;
-  private partyMemebers: any[];
 
   private partyQuestId;
   private partyQuest;
@@ -30,12 +31,8 @@ export class PartySocketService {
       });
 
       this.socketParty.on('createdParty', (response)=>{
-        this.partyId = response.partyId;
+        this.partyData = new PartyData(response);
         this.partyLeader = true;
-
-        let playerData = this.loginSocketService.getPlayerData();
-        this.partyMemebers= [];
-        this.partyMemebers.push(playerData.getUsername());
 
         this.partyJoinedSubject.next(response);
       });
@@ -54,15 +51,15 @@ export class PartySocketService {
 
       // todo new party member alert
       this.socketParty.on('joinedParty', (response)=>{
+        console.log(response);
         let playerData = this.loginSocketService.getPlayerData();
         if(response.username == playerData.getUsername()){
-          this.partyId = response.partyId;
+          this.partyData = new PartyData(response);
           this.partyLeader = false;
-          this.partyJoinedSubject.next(response);
         } else{ // a different user has joined out party
-
+          this.partyData = new PartyData(response);
         }
-        this.partyMemebers.push(response.username);
+        this.partyJoinedSubject.next(this.partyData);
       });
 
       this.socketParty.on('launchQuest', (questData)=>{
@@ -120,7 +117,7 @@ export class PartySocketService {
   }
 
   public inParty():boolean{
-    return !(this.partyId === -1)
+    return this.partyData != null
   }
 
   public isPartyLeader():boolean{
@@ -132,7 +129,15 @@ export class PartySocketService {
   }
 
   public getPartySize(): number {
-      return this.partyMemebers.length;
+      return this.getMembers().length;
+  }
+
+  public getMembers():PlayerData[]{
+    return this.partyData.getMembers();
+  }
+
+  public getPartyId():any{
+    return this.partyData.getPartyId();
   }
 
   createParty(data: any): any {
@@ -152,7 +157,7 @@ export class PartySocketService {
   }
 
   startQuest(questId: number): any {
-    let data = {partyId:this.partyId, questId:questId};
+    let data = {partyId:this.getPartyId(), questId:questId};
     let playerData = this.loginSocketService.getPlayerData();
     data["username"] = playerData.getUsername();
     data["token"] = playerData.getToken();
@@ -160,7 +165,7 @@ export class PartySocketService {
   }
 
   vote(choiceId: any) {
-    let data = {partyId:this.partyId, choiceId:choiceId};
+    let data = {partyId:this.getPartyId(), choiceId:choiceId};
     let playerData = this.loginSocketService.getPlayerData();
     data["username"] = playerData.getUsername();
     data["token"] = playerData.getToken();
@@ -168,7 +173,7 @@ export class PartySocketService {
   }
 
   sendChosenVote(choiceId: any, taskData:any={}) {
-    let data = {partyId:this.partyId, choiceId:choiceId, questActionCode:"chosenVoteAction",taskData};
+    let data = {partyId:this.getPartyId(), choiceId:choiceId, questActionCode:"chosenVoteAction",taskData};
     let playerData = this.loginSocketService.getPlayerData();
     data["username"] = playerData.getUsername();
     data["token"] = playerData.getToken();

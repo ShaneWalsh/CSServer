@@ -100,6 +100,12 @@ export class QuestComponent implements OnInit {
 
     }
 
+    //todo _s remove
+    let members = this.partySocketService.getMembers()
+    for(let playerData of members){
+      console.log(playerData.getUsername() +" Hoooo ");
+    }
+
     this.partySocketService.sendChosenVote(choice.getId());
   }
 
