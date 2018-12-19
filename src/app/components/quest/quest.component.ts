@@ -39,7 +39,10 @@ export class QuestComponent implements OnInit {
     this.questId = this.partySocketService.getPartyQuestId();
     this.questData = this.questSocketService.getQuest(this.questId);
     // once we have the quest, we should get a playable instance.
-    this.currentStoryNode = new StoryNode(this.getQData().startingStoryNodeId,this.getQData().stories[this.getQData().startingStoryNodeId], this.getQData().choice);
+    this.currentStoryNode = new StoryNode(this.getQData().startingStoryNodeId,
+        this.getQData().stories[this.getQData().startingStoryNodeId],
+        this.getQData().choice,
+        this.partySocketService.getMembers());
     // and start running through it!
 
     this.subscriptionPartyVoteSubject = this.partySocketService.getPartyVoteSubject().subscribe(questAction => {
@@ -99,7 +102,7 @@ export class QuestComponent implements OnInit {
     // if this choice has any actions decide, execute them now!
     let taskData = choice.executeTask(this.partySocketService.getMembers());
     this.partySocketService.sendChosenVote(choice.getId(), taskData);
-    
+
     //todo _s remove
     // let members = this.partySocketService.getMembers()
     // for(let playerData of members){
@@ -140,7 +143,7 @@ export class QuestComponent implements OnInit {
       // what kind of choice is this? could be a task, if so, execute the task!
 
       let storyId = this.getQData().choice[questAction.getData().choiceId].story[0]; // postion 0 for defaults, 0/1 for actions.
-      this.currentStoryNode = new StoryNode(storyId,this.getQData().stories[storyId], this.getQData().choice);
+      this.currentStoryNode = new StoryNode(storyId,this.getQData().stories[storyId], this.getQData().choice,this.partySocketService.getMembers());
     }
   }
 

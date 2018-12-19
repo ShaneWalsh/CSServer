@@ -14,26 +14,33 @@ export class ChoiceNode{
   private _typeStr:string = "";
   private _hasTask:boolean = false;
   private _taskRoll:number = 0; // the roll value required for the action to be a success.
+  private _chosenPlayer:PlayerData = null;
 
   private _votes:string[] = [];
 
-  constructor(id, choiceData) {
+  constructor(id, choiceData, playerData:PlayerData[]) {
     this._id = id;
     this._text = choiceData.text;
     this._storyId = choiceData.story;
 
     if(choiceData.choiceType){
-      if(choiceData.choiceType == "default")
+      if(choiceData.choiceType == "default"){
         this._type = ChoiceType.default;
-      else if(choiceData.choiceType == "beefTask"){
-        this._type = ChoiceType.beefTask;
-        this._taskRoll = choiceData.taskRoll;
-        this._hasTask = true;
-        this._typeStr = "beef";
+      }
+      else{
+        if(choiceData.choiceType == "beefTask"){
+          this._type = ChoiceType.beefTask;
+          this._taskRoll = choiceData.taskRoll;
+          this._hasTask = true;
+          this._typeStr = "beef";
+        }
+        this._chosenPlayer = this.findHighestStat(playerData);
+
+        // todo _s replace strings in the
+        this._text = this.performReplacements(this._text,this._chosenPlayer);
       }
     }
-
-      // add functions to execute
+    // add functions to execute
 
   }
 
@@ -57,6 +64,28 @@ export class ChoiceNode{
       return this._hasTask;
   }
 
+  getChosenPlayer(){
+    return this._chosenPlayer;
+  }
+
+  performReplacements(text:string, playerData:PlayerData):string{
+    text = text.replace("${player}",playerData.getUsername());
+    return text;
+  }
+
+  findHighestStat(playerData:PlayerData[]):PlayerData{
+      let highest= 0;
+      let highestPlayer:PlayerData;
+      for(let player of playerData){
+        let val:number = this.getBouns(player);
+        if(val > highest){
+          highest = val;
+          highestPlayer = player;
+        }
+      }
+      return highestPlayer;
+  }
+
   // execute the task if there is one.
   executeTask(playerData:PlayerData[]): any {
       if(this.hasTask()){
@@ -64,7 +93,7 @@ export class ChoiceNode{
         let bouns:number = this.getBouns(playerData[0]);
         let taskRollCalculation = roll + " + ("+this._typeStr+") " + bouns;
         return {"taskRollCalculation":taskRollCalculation, "rollTotal":roll+bouns}
-      } else{
+      } else {
         return {};
       }
   }

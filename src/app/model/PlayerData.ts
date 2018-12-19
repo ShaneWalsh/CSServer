@@ -1,7 +1,7 @@
 
 export class PlayerData{
 
-  private token:String;
+  private token:string;
   private data: any;
 
   // Stats
@@ -26,11 +26,11 @@ export class PlayerData{
     // convert data here into attributes to be set.
   }
 
-  getUsername(): String {
+  getUsername(): string {
       return this.data.username;
   }
 
-  getToken():String{
+  getToken():string{
     return this.token;
   }
 
