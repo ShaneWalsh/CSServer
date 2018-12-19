@@ -30,7 +30,9 @@ export class QuestComponent implements OnInit {
   private subscriptionPartyVoteSubject: Subscription;
   private interval: any;
 
-  constructor(private partySocketService:PartySocketService, private questSocketService:QuestSocketService, private optionsService:OptionsService) {
+  constructor(private partySocketService:PartySocketService,
+              private questSocketService:QuestSocketService,
+              private optionsService:OptionsService) {
     this.canVotesBeChanged = this.optionsService.voteCanBeChange;
     this.votesShown = this.optionsService.votesShown;
 
@@ -95,18 +97,15 @@ export class QuestComponent implements OnInit {
     let choice:ChoiceNode = this.getChosenVote();
 
     // if this choice has any actions decide, execute them now!
-    if(choice.hasTask()){
-      // todo put real task logic
+    let taskData = choice.executeTask(this.loginSocketService.getPlayerData());
 
-    }
+    this.partySocketService.sendChosenVote(choice.getId(), taskData);
 
     //todo _s remove
-    let members = this.partySocketService.getMembers()
-    for(let playerData of members){
-      console.log(playerData.getUsername() +" Hoooo ");
-    }
-
-    this.partySocketService.sendChosenVote(choice.getId());
+    // let members = this.partySocketService.getMembers()
+    // for(let playerData of members){
+    //   console.log(playerData.getUsername() +" Hoooo ");
+    // }
   }
 
   handlePartyAction(questAction: QuestAction) {

@@ -1,4 +1,5 @@
 import { ChoiceType } from "src/app/model/enum/ChoiceType";
+import { PlayerData } from "src/app/model/PlayerData";
 
 
 
@@ -8,8 +9,11 @@ export class ChoiceNode{
   private _text: string;
   private _storyId: any;
   private _show:boolean = true; // by default all choices should be visible unless condition says otherwise.
+
   private _type:ChoiceType = ChoiceType.default;
+  private _typeStr:string = "";
   private _hasTask:boolean = false;
+  private _taskRoll:number = 0; // the roll value required for the action to be a success.
 
   private _votes:string[] = [];
 
@@ -23,7 +27,9 @@ export class ChoiceNode{
         this._type = ChoiceType.default;
       else if(choiceData.choiceType == "beefTask"){
         this._type = ChoiceType.beefTask;
+        this._taskRoll = choiceData.taskRoll;
         this._hasTask = true;
+        this._typeStr = "beef";
       }
     }
 
@@ -51,6 +57,24 @@ export class ChoiceNode{
       return this._hasTask;
   }
 
+  // execute the task if there is one.
+  executeTask(playerData:PlayerData): any {
+      if(this.hasTask()){
+        let roll = this.getRandomInt(20);
+        let bouns:number = this.getBouns(playerData);
+        let taskRollCalculation = roll + " + ("+this._typeStr+") " + bouns;
+        return {"taskRollCalculation":taskRollCalculation, "rollTotal":roll+bouns}
+      } else{
+        return {};
+      }
+  }
+
+  getBouns(playerData:PlayerData):number{
+    if(this._type == ChoiceType.beefTask){
+      return playerData.getBeefTotal();
+    }
+  }
+
   getVotes():string[]{
     return this._votes;
   }
@@ -69,4 +93,7 @@ export class ChoiceNode{
     }
   }
 
+  getRandomInt(max) { // e.g 3 = 1,2,3
+    return (Math.floor(Math.random() * Math.floor(max)))+1;
+  }
 }
