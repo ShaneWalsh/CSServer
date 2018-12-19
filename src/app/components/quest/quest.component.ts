@@ -97,10 +97,9 @@ export class QuestComponent implements OnInit {
     let choice:ChoiceNode = this.getChosenVote();
 
     // if this choice has any actions decide, execute them now!
-    let taskData = choice.executeTask(this.loginSocketService.getPlayerData());
-
+    let taskData = choice.executeTask(this.partySocketService.getMembers());
     this.partySocketService.sendChosenVote(choice.getId(), taskData);
-
+    
     //todo _s remove
     // let members = this.partySocketService.getMembers()
     // for(let playerData of members){

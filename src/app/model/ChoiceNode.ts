@@ -58,10 +58,10 @@ export class ChoiceNode{
   }
 
   // execute the task if there is one.
-  executeTask(playerData:PlayerData): any {
+  executeTask(playerData:PlayerData[]): any {
       if(this.hasTask()){
         let roll = this.getRandomInt(20);
-        let bouns:number = this.getBouns(playerData);
+        let bouns:number = this.getBouns(playerData[0]);
         let taskRollCalculation = roll + " + ("+this._typeStr+") " + bouns;
         return {"taskRollCalculation":taskRollCalculation, "rollTotal":roll+bouns}
       } else{
