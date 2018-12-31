@@ -1,5 +1,6 @@
 import { ChoiceType } from "src/app/model/enum/ChoiceType";
 import { PlayerData } from "src/app/model/PlayerData";
+import { Replacer } from "src/app/services/replacer";
 
 
 
@@ -7,7 +8,7 @@ export class ChoiceNode{
 
   private _id : any;
   private _text: string;
-  private _storyId: any;
+  private _storyIds: any[]; // first/only node is the default, standard text or task failure. Position 2 is the task success node.
   private _show:boolean = true; // by default all choices should be visible unless condition says otherwise.
 
   private _type:ChoiceType = ChoiceType.default;
@@ -21,7 +22,7 @@ export class ChoiceNode{
   constructor(id, choiceData, playerData:PlayerData[]) {
     this._id = id;
     this._text = choiceData.text;
-    this._storyId = choiceData.story;
+    this._storyIds = choiceData.story;
 
     if(choiceData.choiceType){
       if(choiceData.choiceType == "default"){
@@ -35,13 +36,13 @@ export class ChoiceNode{
           this._typeStr = "beef";
         }
         this._chosenPlayer = this.findHighestStat(playerData);
-
-        // todo _s replace strings in the
-        this._text = this.performReplacements(this._text,this._chosenPlayer);
       }
     }
     // add functions to execute
+  }
 
+  performReplacements(chosenPlayer:PlayerData, questContainer:any){
+    this._text = Replacer.performReplacements(this._text,this._chosenPlayer, null, questContainer,null);
   }
 
   getId(): any {
@@ -57,7 +58,11 @@ export class ChoiceNode{
   }
 
   getStoryId():any{
-    return this._storyId;
+    return this._storyIds[0];
+  }
+
+  getStoryIds():any[]{
+    return this._storyIds;
   }
 
   hasTask(): boolean {
@@ -68,16 +73,11 @@ export class ChoiceNode{
     return this._chosenPlayer;
   }
 
-  performReplacements(text:string, playerData:PlayerData):string{
-    text = text.replace("${player}",playerData.getUsername());
-    return text;
-  }
-
   findHighestStat(playerData:PlayerData[]):PlayerData{
       let highest= 0;
       let highestPlayer:PlayerData;
       for(let player of playerData){
-        let val:number = this.getBouns(player);
+        let val:number = this.getBonus(player);
         if(val > highest){
           highest = val;
           highestPlayer = player;
@@ -89,16 +89,23 @@ export class ChoiceNode{
   // execute the task if there is one.
   executeTask(playerData:PlayerData[]): any {
       if(this.hasTask()){
+        let player:PlayerData = this._chosenPlayer;
+        if(player ==null){
+          player = playerData[0];
+        }
+        let success:boolean = false;
         let roll = this.getRandomInt(20);
-        let bouns:number = this.getBouns(playerData[0]);
-        let taskRollCalculation = roll + " + ("+this._typeStr+") " + bouns;
-        return {"taskRollCalculation":taskRollCalculation, "rollTotal":roll+bouns}
+        let bonus:number = this.getBonus(player);
+        if(this._taskRoll <= (roll+bonus)){
+          success = true;
+        }
+        return {"roll":roll, "bonus":bonus, "success":success}
       } else {
         return {};
       }
   }
 
-  getBouns(playerData:PlayerData):number{
+  getBonus(playerData:PlayerData):number{
     if(this._type == ChoiceType.beefTask){
       return playerData.getBeefTotal();
     }

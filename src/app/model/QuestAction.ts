@@ -1,6 +1,5 @@
 
 export class QuestAction{
-
   private action: string;
   private data:any;
 
@@ -16,6 +15,10 @@ export class QuestAction{
 
   getData():any{
     return this.data;
+  }
+
+  getTaskData(): any {
+    return this.data.taskData;
   }
 
 }

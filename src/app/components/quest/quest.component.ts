@@ -7,6 +7,7 @@ import { ChoiceNode } from 'src/app/model/ChoiceNode';
 import { Subscription } from 'rxjs';
 import { QuestAction } from 'src/app/model/QuestAction';
 import { OptionsService } from 'src/app/services/options.service';
+import { LoginSocketService } from 'src/app/services/login-socket.service';
 
 @Component({
   selector: 'app-quest',
@@ -32,7 +33,8 @@ export class QuestComponent implements OnInit {
 
   constructor(private partySocketService:PartySocketService,
               private questSocketService:QuestSocketService,
-              private optionsService:OptionsService) {
+              private optionsService:OptionsService,
+              private loginSocketService:LoginSocketService) {
     this.canVotesBeChanged = this.optionsService.voteCanBeChange;
     this.votesShown = this.optionsService.votesShown;
 
@@ -43,6 +45,7 @@ export class QuestComponent implements OnInit {
         this.getQData().stories[this.getQData().startingStoryNodeId],
         this.getQData().choice,
         this.partySocketService.getMembers());
+    this.currentStoryNode.performReplacements(this.loginSocketService.getPlayerData(), this.questContainer);
     // and start running through it!
 
     this.subscriptionPartyVoteSubject = this.partySocketService.getPartyVoteSubject().subscribe(questAction => {
@@ -141,9 +144,24 @@ export class QuestComponent implements OnInit {
       this.clearTimer(); // might be called multiple times, by the leader and then by slaves.
 
       // what kind of choice is this? could be a task, if so, execute the task!
+      // intelligent defaults. first/only story selected from the choice node, and display nothing before content.
+      let chosenChoiceNode:ChoiceNode = this.currentStoryNode.getChoiceNodeWithId(questAction.getData().choiceId);
+      let storyId = chosenChoiceNode.getStoryId(); // postion 0 for defaults, 0/1 for actions.
 
-      let storyId = this.getQData().choice[questAction.getData().choiceId].story[0]; // postion 0 for defaults, 0/1 for actions.
-      this.currentStoryNode = new StoryNode(storyId,this.getQData().stories[storyId], this.getQData().choice,this.partySocketService.getMembers());
+      if(chosenChoiceNode.hasTask()){
+        let taskData: any = questAction.getTaskData(); // {"roll":roll, "bonus":bonus, "success":success}
+        if(taskData.success){
+          storyId = chosenChoiceNode.getStoryIds()[1]; // else can leave it at the default zero above.
+        }
+        console.log("Rolling..."+taskData.roll+ " Bonus:"+taskData.bonus + "Success:"+taskData.success);
+        //todo _s  display the roll info to the users? after short timeout, switch to this node???
+        this.currentStoryNode = new StoryNode(storyId,this.getQData().stories[storyId], this.getQData().choice,this.partySocketService.getMembers());
+        this.currentStoryNode.performReplacements(chosenChoiceNode.getChosenPlayer(), this.questContainer);
+      } else {
+        this.currentStoryNode = new StoryNode(storyId,this.getQData().stories[storyId], this.getQData().choice,this.partySocketService.getMembers());
+        this.currentStoryNode.performReplacements(this.loginSocketService.getPlayerData(), this.questContainer);
+      }
+
     }
   }
 
