@@ -21,8 +21,16 @@ export class StoryNode {
     this._choices = storyData.choice;
     this._choiceNodes = [];
     for (let i = 0; i < this._choices.length; i++) {
+      let choiceInstance = choiceData[this._choices[i]];
       //  todo _s  add checks to ensure these choices can be used.
-      this._choiceNodes.push(new ChoiceNode(this._choices[i], choiceData[this._choices[i]], playerData));
+      if(choiceInstance.multiPlayer != null && choiceInstance.multiPlayer == true){ //then we have to present this option for every player.
+        for (let j = 0; j < playerData.length; j++) {
+          choiceInstance["chosenPlayer"] = playerData[j];
+          this._choiceNodes.push(new ChoiceNode(this._choices[i], choiceInstance, playerData));
+        }
+      } else{
+        this._choiceNodes.push(new ChoiceNode(this._choices[i], choiceInstance, playerData));
+      }
     }
   }
 

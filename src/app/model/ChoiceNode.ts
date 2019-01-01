@@ -16,6 +16,7 @@ export class ChoiceNode{
   private _hasTask:boolean = false;
   private _taskRoll:number = 0; // the roll value required for the action to be a success.
   private _chosenPlayer:PlayerData = null;
+  private _multiPlayer:boolean =false; // if true, means that this option should be presented for every player.
 
   private _votes:string[] = [];
 
@@ -23,6 +24,14 @@ export class ChoiceNode{
     this._id = id;
     this._text = choiceData.text;
     this._storyIds = choiceData.story;
+
+    if(choiceData.multiPlayer != null && choiceData.multiPlayer == true){
+      this._multiPlayer = true;
+    }
+
+    if(choiceData.chosenPlayer != null){
+        this._chosenPlayer = choiceData.chosenPlayer;
+    }
 
     if(choiceData.choiceType){
       if(choiceData.choiceType == "default"){
@@ -35,10 +44,16 @@ export class ChoiceNode{
           this._hasTask = true;
           this._typeStr = "beef";
         }
-        this._chosenPlayer = this.findHighestStat(playerData);
+        if(this._chosenPlayer == null){
+          this._chosenPlayer = this.findHighestStat(playerData);
+        }
       }
     }
-    // add functions to execute
+
+    if(this._chosenPlayer != null){
+      this._id = this._id +"-"+this._chosenPlayer.getUsername();
+    }
+
   }
 
   performReplacements(chosenPlayer:PlayerData, questContainer:any){
@@ -67,6 +82,10 @@ export class ChoiceNode{
 
   hasTask(): boolean {
       return this._hasTask;
+  }
+
+  isMultiPlayer():boolean{
+    return this._multiPlayer;
   }
 
   getChosenPlayer(){

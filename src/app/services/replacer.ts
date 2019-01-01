@@ -8,6 +8,7 @@ export class Replacer {
     if(wholeText != null){
       if(chosenPlayer != null){
         wholeText = this.replace(wholeText, "${player}",chosenPlayer.getUsername());
+        wholeText = this.replace(wholeText, "${playerGender}",chosenPlayer.getUsername());
       }
       if(partyPlayers != null){
 

@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 import { QuestAction } from 'src/app/model/QuestAction';
 import { OptionsService } from 'src/app/services/options.service';
 import { LoginSocketService } from 'src/app/services/login-socket.service';
+import { PlayerData } from 'src/app/model/PlayerData';
 
 @Component({
   selector: 'app-quest',
@@ -156,18 +157,14 @@ export class QuestComponent implements OnInit {
         console.log("Rolling..."+taskData.roll+ " Bonus:"+taskData.bonus + "Success:"+taskData.success);
         //todo _s  display the roll info to the users? after short timeout, switch to this node???
         this.currentStoryNode = new StoryNode(storyId,this.getQData().stories[storyId], this.getQData().choice,this.partySocketService.getMembers());
-        this.currentStoryNode.performReplacements(chosenChoiceNode.getChosenPlayer(), this.questContainer);
+        this.currentStoryNode.performReplacements(this.getChosenPlayer(chosenChoiceNode), this.questContainer);
       } else {
         this.currentStoryNode = new StoryNode(storyId,this.getQData().stories[storyId], this.getQData().choice,this.partySocketService.getMembers());
-        this.currentStoryNode.performReplacements(this.loginSocketService.getPlayerData(), this.questContainer);
+        this.currentStoryNode.performReplacements(this.getChosenPlayer(chosenChoiceNode), this.questContainer);
       }
 
     }
   }
-
-
-
-
 
 
   ngOnInit() {
@@ -191,6 +188,13 @@ export class QuestComponent implements OnInit {
     },1000)
   }
 
+  getChosenPlayer(choiceNode:ChoiceNode):PlayerData {
+    let chosenPlayer:PlayerData =choiceNode.getChosenPlayer();
+    if(chosenPlayer == null){
+      chosenPlayer= this.loginSocketService.getPlayerData();
+    }
+    return chosenPlayer;
+  }
 
   ngOnDestroy() {
       this.subscriptionPartyVoteSubject.unsubscribe();
