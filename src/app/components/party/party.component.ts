@@ -38,6 +38,9 @@ export class PartyComponent implements OnInit {
       this.inParty = true;
     });
     this.quests = this.questSocketService.getQuestList();
+
+    // on init, go get the latest games
+    this.partySocketService.getAllParties();
   }
 
   ngOnInit() {

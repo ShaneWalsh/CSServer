@@ -21,7 +21,7 @@ export class PartySocketService {
 
   private partyQuestId;
   private partyQuest;
-  private parties = [];
+  private parties : PartyData[] = [];
 
   constructor(private socketParty:SocketParty,
     private loginSocketService:LoginSocketService) {
@@ -38,8 +38,19 @@ export class PartySocketService {
       });
 
       this.socketParty.on('newParty', (response)=>{
-        this.parties.push(response); // store the new party in the service, save us calling for them all again.
+        this.parties.push(new PartyData(response)); // store the new party in the service, save us calling for them all again.
         this.partyNewSubject.next(this.parties); // send the party list to the front end.
+      });
+
+      this.socketParty.on('allExistingParties', (response)=>{
+        console.log(response);
+        // clear the parties.
+        this.parties = [];
+        for(let i = 0; i <  response.parties.length;i++){
+        // then push all of the parties
+          this.parties.push(new PartyData(response.parties[i]));
+        }
+        this.partyNewSubject.next(this.parties);
       });
 
       // party destroyed, handle the same as above but the reverse
@@ -178,6 +189,14 @@ export class PartySocketService {
     data["username"] = playerData.getUsername();
     data["token"] = playerData.getToken();
     this.socketParty.emit("partyUpdate",data);
+  }
+
+  getAllParties(){
+    let data = {};
+    let playerData = this.loginSocketService.getPlayerData();
+    data["username"] = playerData.getUsername();
+    data["token"] = playerData.getToken();
+    this.socketParty.emit("getAllParties", data);
   }
 
 }
