@@ -3,7 +3,8 @@ import { PlayerData } from "src/app/model/PlayerData";
 export class PartyData{
 
   private partyId:any;
-  private partyMembers:PlayerData[];
+  private partyMembers:PlayerData[]; // for your parties data
+  private members:string[]; // for all parties members
 
   private partyName:string;
   private partyDescription:string;
@@ -14,8 +15,14 @@ export class PartyData{
   constructor(response) {
     this.partyId = response.partyId;
     this.partyMembers = []; // merge the parties player data.
-    for(let i = 0; i < response.membersData.length;i++){
-      this.partyMembers.push(new PlayerData("",response.membersData[i]));
+    this.members = [];
+    if(response.membersData != null){
+      for(let i = 0; i < response.membersData.length;i++){
+        this.partyMembers.push(new PlayerData("",response.membersData[i]));
+        this.members.push(response.membersData[i].username);
+      }
+    } else{
+      this.members = response.members;
     }
 
     if(response.partyName != null){
@@ -28,6 +35,8 @@ export class PartyData{
 
     if(response.partySize != null){
       this.partySize = response.partySize;
+    } else {
+      this.partySize = this.partyMembers.length;
     }
 
     if(response.publicParty != null){
@@ -46,6 +55,10 @@ export class PartyData{
 
   public getMembers():PlayerData[]{
     return this.partyMembers;
+  }
+
+  public getMembersUsernames():string[]{
+    return this.members;
   }
 
   public getPartyName():string{

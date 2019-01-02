@@ -16,7 +16,7 @@
       <tr>
         <th scope="col">GroupName</th>
         <th scope="col">Description</th>
-        <th scope="col">Size</th>
+        <th scope="col">Members</th>
         <th scope="col"></th>
       </tr>
     </thead>
@@ -24,8 +24,8 @@
       <tr *ngFor="let party of parties">
         <td>{{party.partyName}}</td>
         <td>{{party.partyDescription}}</td>
-        <td>{{party.partySize}}/4</td>
-        <td><button type="button" name="button" (click)="joinParty(party.partyId)" title="Join Party">Join Party</button></td>
+        <td><span *ngFor="let usernameP of party.getMembersUsernames()">{{usernameP}} </span></td>
+        <td><button *ngIf="party.partySize < 4" type="button" name="button" (click)="joinParty(party.partyId)" title="Join Party">Join Party</button></td>
       </tr>
     </tbody>
   </table>
