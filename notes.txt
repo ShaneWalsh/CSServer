@@ -4,6 +4,16 @@ wss://sheltered-fjord-52187.herokuapp.com/chat
 Good Socket Explaination.
 https://stackoverflow.com/questions/11498508/socket-emit-vs-socket-send
 
+
+Production Build Steps.
+delete dist folder
+swap socket end points to be wss for the heruko server.
+npm run build.
+go to dist folder, delete the base href from index.html.
+zip
+upload.
+
+
 // todo
 Login
 	- Add terms and conditions page after login where the user has to click I agree, where it says they cannot be rude etc. Just to cover yourselves.
