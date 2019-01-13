@@ -60,10 +60,21 @@ Battle, turn based, String interpilation using your item names etc, giving you a
 	- basically, narative based combat.
 	- pre and post battle should still have descriptive nodes.
 
+Reaction Nodes.
+	- user only has 1-5 seconds to click react fast! it will flash different colors or something.
+	- the users will then be split into two groups the groups that managed it and those that didn't.
+	- consequences for those who do and those who dont. e.g lose health, gain dex. or just funny text.
+
+Group Rolls.
+	- some event requires all of the users to roll. e.g sneak past guards.
+	- the users will then be split into two groups the groups that managed it and those that didn't.
+	- consequences for those who do and those who dont. e.g lose health, gain dex. or just funny text.
+
 Version 2
 Fix party stuff. Add proper party create.
 - add invites to other players.
 - add matchmaking for random party assignment. Lvl match making?
+- private party chat
 
 Sound effects?
 	- crypt shyfter.... creepy voice.
@@ -100,8 +111,16 @@ Auction House, buy and sell your awesome looted items to other players.
 Rename Items for gold cost.
 persistence of friends list.
 
+version 7
+Add spectator support so players can watch other people play.
+	- if they were in a new spectator array, that is pushed everything the quest group is sent.
+	- cannot interact with the group.
 
-
+Add shout filter
+	- make people wait 3 seconds between submits.
+	- spam server ban them.
+	- filter curse on client side on both ends.
+	
 
 
 -
