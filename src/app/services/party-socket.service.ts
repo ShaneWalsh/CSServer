@@ -54,9 +54,14 @@ export class PartySocketService {
       });
 
       // party destroyed, handle the same as above but the reverse
-      this.socketParty.on('partyDestroyed', (response)=>{
-        // todo find the right party matching the id, and remove it.
-        //this.parties.splice(response); // store the new party in the service, save us calling for them all again.
+      this.socketParty.on('partyDestroyed', (response)=>{ // todo find the right party matching the id, and remove it
+        let partyId = response.partyId;
+        for(let i = 0; i <  this.parties.length;i++){
+          if(this.parties[i].getPartyId() == partyId){
+            this.parties.splice(i,1);
+            break;
+          }
+        }
         this.partyNewSubject.next(this.parties); // send the party list to the front end.
       });
 
