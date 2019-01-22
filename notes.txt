@@ -35,7 +35,11 @@ Party Solo, ergo not an actual party.
 Gameplay
 	- todo :/
 
-
+Traits, can be found on weapons and amulets etc.
+	- lucky, never roll a one/two/three on anything.
+	- bloodlust grain 2 hp on kill
+	- swifthands att roll +1 dmg
+	
 
 //
 
@@ -120,7 +124,7 @@ Add shout filter
 	- make people wait 3 seconds between submits.
 	- spam server ban them.
 	- filter curse on client side on both ends.
-	
+
 
 
 -

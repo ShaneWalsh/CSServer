@@ -7,13 +7,18 @@
     "4":{"text":"Suck it!","choice":[4]},
     "5":{"text":"${player} fails to lift the mighty boulder! Because ${player} is weak!.","choice":[4]},
     "6":{"text":"Games over.... this should not be shown.","choice":[4]},
-    "7":{"text":"${player} is pushed into the pit he toses out the key but gets bit many times....","choice":[4]}
+    "7":{"text":"${player} is pushed into the pit he toses out the key but gets bit many times....","choice":[8]},
+    "8":{"text":"A door creaks open and inside is a horde of skeletons. They charge at you, swords raised.","choice":[6]},
+    "9":{"text":"With the battle over, you notice a door on the other side of the room.", "battle":true, "bots":[{"bot":"Skeleton", "amount":1.5, "perPlayer":true},{"bot":"SkeletonCaptain", "amount":1, "perPlayer":false}], "choice":[7]}
   },
   "choice":{
     "1":{"text":"Have ${player} try and lift the might boulder!","story":[5,2], "taskRoll":1, "choiceType":"beefTask"},
     "2":{"text":"Hows it matey","story":[3]},
     "3":{"text":"Ohhhh saucy","story":[4]},
     "4":{"text":"the end","story":[6]},
-    "5":{"text":"Push ${player} into pit to get the key.","story":[7], "multiPlayer":true }
+    "5":{"text":"Push ${player} into pit to get the key.","story":[7], "multiPlayer":true },
+    "6":{"text":"Fight them!","story":[9]},
+    "7":{"text":"Run through the other door on other side of the room.","story":[6]},
+    "8":{"text":"You open the door and move down a dark corridor.","story":[8]}
   }
 }
