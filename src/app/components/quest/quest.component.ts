@@ -150,14 +150,18 @@ export class QuestComponent implements OnInit {
       let storyId = chosenChoiceNode.getStoryId(); // postion 0 for defaults, 0/1 for actions.
 
       if(chosenChoiceNode.hasTask()){
-        let taskData: any = questAction.getTaskData(); // {"roll":roll, "bonus":bonus, "success":success}
-        if(taskData.success){
-          storyId = chosenChoiceNode.getStoryIds()[1]; // else can leave it at the default zero above.
+        if(!chosenChoiceNode.isAllPlay()){
+          let taskData: any = questAction.getTaskData(); // {"roll":roll, "bonus":bonus, "success":success}
+          if(taskData.success){
+            storyId = chosenChoiceNode.getStoryIds()[1]; // else can leave it at the default zero above.
+          }
+          console.log("Rolling..."+taskData.roll+ " Bonus:"+taskData.bonus + "Success:"+taskData.success);
+          //todo _s  display the roll info to the users? after short timeout, switch to this node???
+          this.currentStoryNode = new StoryNode(storyId,this.getQData().stories[storyId], this.getQData().choice,this.partySocketService.getMembers());
+          this.currentStoryNode.performReplacements(this.getChosenPlayer(chosenChoiceNode), this.questContainer);
+        } else { // this is an all play so all of the players have submitted values
+
         }
-        console.log("Rolling..."+taskData.roll+ " Bonus:"+taskData.bonus + "Success:"+taskData.success);
-        //todo _s  display the roll info to the users? after short timeout, switch to this node???
-        this.currentStoryNode = new StoryNode(storyId,this.getQData().stories[storyId], this.getQData().choice,this.partySocketService.getMembers());
-        this.currentStoryNode.performReplacements(this.getChosenPlayer(chosenChoiceNode), this.questContainer);
       } else {
         this.currentStoryNode = new StoryNode(storyId,this.getQData().stories[storyId], this.getQData().choice,this.partySocketService.getMembers());
         this.currentStoryNode.performReplacements(this.getChosenPlayer(chosenChoiceNode), this.questContainer);

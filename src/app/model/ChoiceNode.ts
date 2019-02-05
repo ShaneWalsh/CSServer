@@ -16,7 +16,11 @@ export class ChoiceNode{
   private _hasTask:boolean = false;
   private _taskRoll:number = 0; // the roll value required for the action to be a success.
   private _chosenPlayer:PlayerData = null;
+
   private _multiPlayer:boolean =false; // if true, means that this option should be presented for every player.
+  // OR, its is either _multiPlayer or allPlay cannot be both.
+  private _allPlay:boolean = false; // by default all tasks are single player. But when allPlay is true, its for all players a group task.
+  private _allMustPass:boolean = false; // when allPlay true, if allMustPass is true means all players must pass to get to option 1, else option 2 is chosen. false, only one has to pass.
 
   private _votes:string[] = [];
 
@@ -27,6 +31,13 @@ export class ChoiceNode{
 
     if(choiceData.multiPlayer != null && choiceData.multiPlayer == true){
       this._multiPlayer = true;
+    }
+
+    if(choiceData.allPlay != null && choiceData.allPlay == true){
+      this._allPlay = true;
+      if(choiceData.allMustPass != null && choiceData.allMustPass == true){
+        this._allMustPass = true;
+      }
     }
 
     if(choiceData.chosenPlayer != null){
@@ -44,7 +55,7 @@ export class ChoiceNode{
           this._hasTask = true;
           this._typeStr = "beef";
         }
-        if(this._chosenPlayer == null){
+        if(this._chosenPlayer == null && !this._allPlay){
           this._chosenPlayer = this.findHighestStat(playerData);
         }
       }
@@ -88,6 +99,14 @@ export class ChoiceNode{
     return this._multiPlayer;
   }
 
+  isAllPlay():boolean{
+    return this._allPlay;
+  }
+
+  isAllMustPass():boolean{
+    return this._allMustPass;
+  }
+
   getChosenPlayer(){
     return this._chosenPlayer;
   }
@@ -108,17 +127,47 @@ export class ChoiceNode{
   // execute the task if there is one.
   executeTask(playerData:PlayerData[]): any {
       if(this.hasTask()){
-        let player:PlayerData = this._chosenPlayer;
-        if(player ==null){
-          player = playerData[0];
+        if(!this._allPlay){
+          let player:PlayerData = this._chosenPlayer;
+          if(player ==null){
+            player = playerData[0];
+          }
+          let success:boolean = false;
+          let roll = this.getRandomInt(20);
+          let bonus:number = this.getBonus(player);
+          if(this._taskRoll <= (roll+bonus)){
+            success = true;
+          }
+          return {"name":player.getUsername(), "roll":roll, "bonus":bonus, "success":success}
+        } else { // this is an all play
+            // so roll for every player, save all results
+            let success:boolean = false;
+            let fail:boolean = false;
+            let passPlayers = [];
+            let failPlayers = [];
+            for(let player of playerData){
+              let roll = this.getRandomInt(20);
+              let bonus:number = this.getBonus(player);
+              if(this._taskRoll > (roll+bonus)){
+                fail = true;
+                failPlayers.push({"name":player.getUsername(), "roll":roll, "bonus":bonus, "success":success})
+              } else {
+                success = true;
+                passPlayers.push({"name":player.getUsername(), "roll":roll, "bonus":bonus, "success":success})
+              }
+            }
+            let passTask = false;  // if _allMustPass, then any failure means success = false;
+            if(this._allMustPass && fail){ // fail // all have to pass and one failed
+              passTask = false;
+            } else if(this._allMustPass && !fail) { // pass  // all have to pass and none failed
+              passTask = true;
+            } else if(!this._allMustPass && success) { // pass  // only one has to pass and they have so success
+              passTask = true;
+            } else if(!this._allMustPass && !success) { // fail  // only one has to pass and none have so
+              passTask = false;
+            }
+            return {"success":passTask, "passPlayers":passPlayers, "failPlayers":failPlayers}
         }
-        let success:boolean = false;
-        let roll = this.getRandomInt(20);
-        let bonus:number = this.getBonus(player);
-        if(this._taskRoll <= (roll+bonus)){
-          success = true;
-        }
-        return {"roll":roll, "bonus":bonus, "success":success}
       } else {
         return {};
       }
