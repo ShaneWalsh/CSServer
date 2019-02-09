@@ -1,7 +1,7 @@
 {
   "startingStoryNodeId":1,
   "stories":{
-    "1":{"text":"You all raise your drinks in celebration! When a creepy old feller approaches.","choice":[1,2,3]},
+    "1":{"text":"You all raise your drinks in celebration! When a creepy old feller approaches.","choice":[1,2,3,9]},
     "2":{"text":"${player} lifts the boulder with a pink finger and tosses it aside! .The key to the next door apears to be at the bottom of a pit of snakes. How snakey... ha.","choice":[5]},
     "3":{"text":"You're a matey","choice":[4]},
     "4":{"text":"Suck it!","choice":[4]},
@@ -13,7 +13,7 @@
     "9":{"text":"With the battle over, you notice a door on the other side of the room.", "battle":true, "bots":[{"bot":"Skeleton", "amount":1.5, "perPlayer":true},{"bot":"SkeletonCaptain", "amount":1, "perPlayer":false}], "choice":[7]},
 
     "10":{"text":"${partyNick} all creep along the wall like ninjas, no fear.","choice":[6]},
-    "11":{"text":"${passPlayers} all creep along the wall like ninjas, no fear but ${failPlayers} trips on their shoe laces and tumble into some bowling pins for a perfect strike alerting the guards.","choice":[6]}
+    "11":{"text":"${pp${passPlayers} all creep along the wall like ninjas, no fear but pp}${ff${failPlayers} trip on their shoe laces and tumble into some bowling pins for a perfect strike alerting the guards.ff}","choice":[6]}
 
   },
   "choice":{
@@ -26,6 +26,6 @@
     "7":{"text":"Run through the other door on other side of the room.","story":[6]},
     "8":{"text":"You open the door and move down a dark corridor.","story":[8]},
 
-    "9":{"text":"Try to sneak past the guards", "taskRoll":1, "choiceType":"beefTask", "allMustPass":"true", "allPlay":"true", "story":[10,11]}
+    "9":{"text":"Try to sneak past the guards", "taskRoll":19, "choiceType":"beefTask", "allMustPass":true, "allPlay":true, "story":[11,10]}
   }
 }

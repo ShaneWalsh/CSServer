@@ -20,7 +20,7 @@ export class QuestComponent implements OnInit {
   private questId:number;
   private questData:QuestData;
 
-  private questContainer:any; // used for any and all local variables set by the quest. e.g states etc.
+  private questContainer:any={}; // used for any and all local variables set by the quest. e.g states etc.
 
   private currentStoryNode:StoryNode;
   private voteTimer:number = -1;
@@ -46,7 +46,7 @@ export class QuestComponent implements OnInit {
         this.getQData().stories[this.getQData().startingStoryNodeId],
         this.getQData().choice,
         this.partySocketService.getMembers());
-    this.currentStoryNode.performReplacements(this.loginSocketService.getPlayerData(), this.questContainer);
+    this.currentStoryNode.performReplacements(this.loginSocketService.getPlayerData(),this.partySocketService.getMembers(), this.questContainer);
     // and start running through it!
 
     this.subscriptionPartyVoteSubject = this.partySocketService.getPartyVoteSubject().subscribe(questAction => {
@@ -158,13 +158,32 @@ export class QuestComponent implements OnInit {
           console.log("Rolling..."+taskData.roll+ " Bonus:"+taskData.bonus + "Success:"+taskData.success);
           //todo _s  display the roll info to the users? after short timeout, switch to this node???
           this.currentStoryNode = new StoryNode(storyId,this.getQData().stories[storyId], this.getQData().choice,this.partySocketService.getMembers());
-          this.currentStoryNode.performReplacements(this.getChosenPlayer(chosenChoiceNode), this.questContainer);
+          this.currentStoryNode.performReplacements(this.getChosenPlayer(chosenChoiceNode), this.partySocketService.getMembers(), this.questContainer);
         } else { // this is an all play so all of the players have submitted values
-
+          let taskData: any = questAction.getTaskData(); // {"success":passTask, "passPlayers":passPlayers, "failPlayers":failPlayers} {"name":player.getUsername(), "roll":roll, "bonus":bonus, "success":success}
+          if(taskData.success){
+            storyId = chosenChoiceNode.getStoryIds()[1]; // else can leave it at the default zero above.
+          }
+          if(questAction.getTaskData().passPlayers){
+            let passPlayers = "";
+              for(let i = 0; i < questAction.getTaskData().passPlayers.length;i++){
+                passPlayers+= questAction.getTaskData().passPlayers[i].name + ((i+1 < questAction.getTaskData().passPlayers.length)?(i+2 < questAction.getTaskData().passPlayers.length)?" , ":" and ":"");
+              }
+              this.questContainer["passPlayers"] = passPlayers;
+          }
+          if(questAction.getTaskData().failPlayers){
+            let failPlayers = "";
+              for(let i = 0; i < questAction.getTaskData().failPlayers.length;i++){
+                failPlayers+= questAction.getTaskData().failPlayers[i].name + ((i+1 < questAction.getTaskData().failPlayers.length)?(i+2 < questAction.getTaskData().failPlayers.length)?" , ":" and ":"");
+              }
+              this.questContainer["failPlayers"] = failPlayers;
+          }
+          this.currentStoryNode = new StoryNode(storyId,this.getQData().stories[storyId], this.getQData().choice,this.partySocketService.getMembers());
+          this.currentStoryNode.performReplacements(this.getChosenPlayer(chosenChoiceNode),this.partySocketService.getMembers(), this.questContainer);
         }
       } else {
         this.currentStoryNode = new StoryNode(storyId,this.getQData().stories[storyId], this.getQData().choice,this.partySocketService.getMembers());
-        this.currentStoryNode.performReplacements(this.getChosenPlayer(chosenChoiceNode), this.questContainer);
+        this.currentStoryNode.performReplacements(this.getChosenPlayer(chosenChoiceNode), this.partySocketService.getMembers(), this.questContainer);
       }
 
     }

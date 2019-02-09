@@ -52,11 +52,11 @@ export class StoryNode {
     //return this.getChoiceNodes()[0]; //
   }
 
-  performReplacements(chosenPlayer:PlayerData, questContainer:any){
-    this._text = Replacer.performReplacements(this._text, chosenPlayer, null, questContainer,null);
+  performReplacements(chosenPlayer:PlayerData,players:PlayerData[], questContainer:any){
+    this._text = Replacer.performReplacements(this._text, chosenPlayer, players, questContainer,null);
     for (let i = 0; i < this._choiceNodes.length; i++) {
       //  todo _s  add checks to ensure these choices can be used.
-      this._choiceNodes[i].performReplacements(chosenPlayer,questContainer);
+      this._choiceNodes[i].performReplacements(chosenPlayer,players,questContainer);
     }
   }
 }

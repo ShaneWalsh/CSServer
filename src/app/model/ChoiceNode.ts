@@ -67,8 +67,8 @@ export class ChoiceNode{
 
   }
 
-  performReplacements(chosenPlayer:PlayerData, questContainer:any){
-    this._text = Replacer.performReplacements(this._text,this._chosenPlayer, null, questContainer,null);
+  performReplacements(chosenPlayer:PlayerData, players:PlayerData[], questContainer:any){
+    this._text = Replacer.performReplacements(this._text,this._chosenPlayer, players, questContainer,null);
   }
 
   getId(): any {
